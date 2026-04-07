@@ -18,6 +18,115 @@ You don't need to know any of these tools. Claude Code does. Just tell it what y
 
 ---
 
+## From Idea to Code: The Bridge
+
+During the first hour of the workshop, you'll brainstorm your MVP idea with your team and your workshop leader. By the end of that session, you'll have something — maybe notes on a whiteboard, a sketch on paper, a few bullet points in your head.
+
+The question is: **how do you turn that into something Claude Code can actually build?**
+
+### The problem
+
+If you open Claude Code and type *"build my app"*, you'll get something generic. If you dump 3 pages of brainstorming notes, you'll burn tokens and confuse it. The sweet spot is a **short, structured brief** — think of it as a creative brief for a developer who's never heard of your idea.
+
+### Write a project brief
+
+After your brainstorming session, take 5 minutes as a team to fill this in. Write it in a text file, on paper, or in your notes app — wherever your team thinks best.
+
+```
+PROJECT BRIEF
+
+App name: _______________
+
+One sentence: What does this app do, and for who?
+→ _______________
+
+Pages:
+→ _______________  (what does the user see here?)
+→ _______________  (what does the user see here?)
+→ _______________  (what does the user see here?)
+
+Data: What are we storing?
+→ Table: _________ (columns: _________)
+→ Table: _________ (columns: _________)
+
+User flow: What happens step by step?
+→ 1. User signs up / logs in
+→ 2. _______________
+→ 3. _______________
+→ 4. _______________
+```
+
+**Example — a team building an expense tracker:**
+
+```
+PROJECT BRIEF
+
+App name: SpendTrack
+
+One sentence: A simple app where people log their daily expenses and see where their money goes.
+
+Pages:
+→ /login and /signup (email + password auth)
+→ /dashboard (list of expenses, total spent this month, "add expense" button)
+→ /add (form: amount, category dropdown, short description, date)
+
+Data:
+→ Table: expenses (id, amount, category, description, date, user_id, created_at)
+→ Categories: Food, Transport, Entertainment, Shopping, Bills, Other
+
+User flow:
+→ 1. User signs up or logs in
+→ 2. Sees their dashboard with all expenses and a monthly total
+→ 3. Clicks "Add Expense" and fills out the form
+→ 4. Expense appears in the list, total updates
+```
+
+### Feed it to Claude Code
+
+Once your brief is ready, you have two options:
+
+**Option A: Paste it as your first prompt**
+
+Open Claude Code and paste your entire brief as the first message. Then say:
+
+> Here's what we're building. Start with the database setup — create the Supabase table, then build the auth pages (signup + login), then the main dashboard page.
+
+This gives Claude Code the full picture upfront so it makes smart decisions about structure.
+
+**Option B: Save it as a file (recommended)**
+
+Save your brief as `BRIEF.md` in the project root. Then tell Claude Code:
+
+> Read BRIEF.md — that's what we're building. Start with setting up the Supabase table, then auth, then the dashboard.
+
+This way Claude Code can re-read it anytime without you re-explaining. Saves tokens.
+
+### Scope check
+
+Before you start building, do a final gut check with your team:
+
+- **Can you build this in 2 hours?** If your brief has more than 3 pages or 2 tables, cut something.
+- **What's the ONE thing this app does?** If you can't answer in 5 words, simplify.
+- **What can you cut?** Settings page? Profile page? Filters? Cut them. Ship the core, add extras if you have time.
+
+A finished simple app you can demo beats a half-built complex one every time.
+
+### Starter ideas
+
+Not sure what to build? Pick one of these:
+
+| Idea | One sentence | Core screen |
+|------|-------------|-------------|
+| **Expense Tracker** | Log expenses and see totals by category | Dashboard with expense list + add form |
+| **Task Manager** | Create, complete, and organize tasks | Task list with checkboxes + input |
+| **Team Poll** | Create polls and vote in real-time | Poll with options and vote counts |
+| **Bookmark Saver** | Save and tag links for later | Grid of bookmark cards + URL input |
+| **Habit Tracker** | Check off daily habits and track streaks | Calendar grid of habits |
+| **Simple Blog** | Write and publish short posts | Post list + new post form |
+| **Standup Logger** | Team members post daily standups | Timeline of standup entries |
+
+---
+
 ## Setup (5 minutes)
 
 ### Step 1: Clone this repo
