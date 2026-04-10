@@ -2,11 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { EventCard } from "@/components/EventCard";
 import { EventModal } from "@/components/EventModal";
 import { cn } from "@/lib/utils";
-
 const SPORT_ICONS = {
   Football:   "⚽",
   Basketball: "🏀",
@@ -123,8 +123,7 @@ export function HomeClient({ events }) {
               active={selectedSport === s.name}
               onClick={() => setSelectedSport(selectedSport === s.name ? null : s.name)}
             >
-              <span>{SPORT_ICONS[s.name] ?? "🏅"}</span>
-              {s.name}
+              {SPORT_ICONS[s.name] ?? "🏅"} {s.name}
             </FilterChip>
           ))}
         </div>
@@ -141,6 +140,19 @@ export function HomeClient({ events }) {
             {opt.label}
           </FilterChip>
         ))}
+      </div>
+
+      {/* Events header */}
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <p className="text-sm text-muted-foreground">
+          {filtered.length} event{filtered.length !== 1 ? "s" : ""}
+        </p>
+        <Link
+          href="/new"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          + Host event
+        </Link>
       </div>
 
       {/* Events grid */}

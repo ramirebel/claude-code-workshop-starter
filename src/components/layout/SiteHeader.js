@@ -9,71 +9,73 @@ import { cn } from "@/lib/utils";
 
 const linkClass =
   "text-sm font-medium text-muted-foreground transition-colors hover:text-foreground";
-const primaryLinkClass =
-  "text-sm font-medium text-primary underline-offset-4 hover:underline";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const { user, isAuthenticated, signOut } = useAuth();
 
-  if (pathname && isAuthOnlyPath(pathname)) {
-    return null;
-  }
+  if (pathname && isAuthOnlyPath(pathname)) return null;
+
+  const displayName =
+    user?.user_metadata?.full_name?.split(" ")[0] ??
+    user?.email?.split("@")[0] ??
+    "Account";
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        {/* Brand */}
         <Link
           href="/"
           className="text-sm font-semibold tracking-tight text-foreground"
         >
-          ActiveTogether
+          Active2gether
         </Link>
-        <nav className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
+
+        {/* Nav */}
+        <nav className="flex items-center gap-1 sm:gap-2">
           <ThemeToggle />
-          <Link href="/" className={cn(linkClass, pathname === "/" && "text-foreground")}>
-            Home
-          </Link>
+
           {isAuthenticated ? (
             <>
               <Link
-                href="/new"
+                href="/"
                 className={cn(
-                  "text-sm font-medium rounded-lg border border-border bg-card px-3 py-1.5 text-card-foreground shadow-xs hover:bg-accent hover:text-accent-foreground",
-                  pathname?.startsWith("/new") && "bg-accent text-accent-foreground"
+                  "hidden sm:inline-flex h-8 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
+                  pathname === "/" && "text-foreground",
                 )}
               >
-                + Host event
+                Home
               </Link>
               <Link
                 href="/account"
                 className={cn(
-                  linkClass,
-                  pathname?.startsWith("/account") && "text-foreground"
+                  "inline-flex h-8 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
+                  pathname?.startsWith("/account") && "text-foreground",
                 )}
               >
-                Account
+                {displayName}
               </Link>
-              <span className="hidden max-w-48 truncate text-xs text-muted-foreground sm:inline">
-                {user?.email}
-              </span>
               <button
                 type="button"
                 onClick={() => signOut()}
-                className={cn(
-                  "rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-card-foreground shadow-xs",
-                  "hover:bg-accent hover:text-accent-foreground"
-                )}
+                className="inline-flex h-8 items-center rounded-lg border border-border px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Sign out
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className={linkClass}>
+              <Link
+                href="/login"
+                className="inline-flex h-8 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
                 Log in
               </Link>
-              <Link href="/signup" className={primaryLinkClass}>
+              <Link
+                href="/signup"
+                className="inline-flex h-8 items-center rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+              >
                 Sign up
               </Link>
             </>
