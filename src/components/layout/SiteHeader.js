@@ -27,7 +27,7 @@ export function SiteHeader() {
           href="/"
           className="text-sm font-semibold tracking-tight text-foreground"
         >
-          Workshop
+          ActiveTogether
         </Link>
         <nav className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
           <ThemeToggle />
@@ -36,6 +36,15 @@ export function SiteHeader() {
           </Link>
           {isAuthenticated ? (
             <>
+              <Link
+                href="/new"
+                className={cn(
+                  "text-sm font-medium rounded-lg border border-border bg-card px-3 py-1.5 text-card-foreground shadow-xs hover:bg-accent hover:text-accent-foreground",
+                  pathname?.startsWith("/new") && "bg-accent text-accent-foreground"
+                )}
+              >
+                + Host event
+              </Link>
               <Link
                 href="/account"
                 className={cn(

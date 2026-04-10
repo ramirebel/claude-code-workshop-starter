@@ -11,7 +11,7 @@
 
 ## Product
 
-**Name:** TeamUp
+**Name:** ActiveTogether
 
 **One sentence:** A platform to find and join local group sports and outdoor activities.
 

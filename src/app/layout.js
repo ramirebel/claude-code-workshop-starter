@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Workshop app",
-  description: "Next.js + Supabase workshop starter",
+  title: "ActiveTogether",
+  description: "Find and join local sports events and outdoor activities.",
 };
 
 export default async function RootLayout({ children }) {
