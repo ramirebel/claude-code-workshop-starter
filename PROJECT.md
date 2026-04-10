@@ -11,42 +11,49 @@
 
 ## Product
 
-**Name:** [your product name]
+**Name:** TeamUp
 
-**One sentence:** [what does it do, and for who?]
+**One sentence:** A platform to find and join local group sports and outdoor activities.
 
-**Problem:** [what pain point are you solving?]
+**Problem:** People struggle to find enough players and coordinate time, place, and cost to organize group sports or outdoor activities like hikes.
 
 ## Target Audience
 
-**Who is this for?** [be specific — "freelancers who forget to send invoices", not "people"]
+**Who is this for?** athletes, group sport amatures, solo players , casuals, game organisers
 
-**Why would they use it?** [what's the alternative today, and why is yours better?]
+**Why would they use it?** to find an orgainzed group game in team sports (football, basketball , hand ball , ......)  
 
 ## Pages & User Flow
 
 <!-- List every page. Describe what the user sees and does on each. -->
 
 1. `/login` and `/signup` — email + password authentication
-2. `/` — [describe the main screen — what does the user see when they log in?]
-3. [add more pages as needed]
+2. `/` — a search bar , cards for events , each event pops up with event details and  a participation form and submit button
+3. `/new` a form page to create an event (a group sport game or a hike), form contains [ name , location link , location name , type , gender ( males|females|mixed ),description , price (or free) ]
 
-**User flow:**
+**User flow 1:**
 1. User signs up or logs in
-2. [what happens next?]
-3. [next step]
-4. [next step]
+2. looks for the appropriate event 
+3. consults the event details
+4. submits his information for participation
+
+**User flow :**
+1. User signs up or logs in
+2. consults the creation page 
+3. fills info and submits the organized event for public
 
 ## Data Model
 
 <!-- What are you storing? Keep it to 1-2 tables for an MVP. -->
 
-**Table: [name]**
+**Table: [User]**
 | Column | Type | Description |
 |--------|------|-------------|
 | id | uuid | Primary key |
-| | | |
-| | | |
+| fullname | String | notnull |
+| birthdate|string | |
+| email|string | |
+| phone|int | |
 | user_id | uuid | Owner of this row |
 | created_at | timestamp | Auto-set |
 
