@@ -2,8 +2,20 @@ import { cn } from "@/lib/utils";
 
 const GENDER_LABEL = { male: "Men only", female: "Women only", mixed: "Mixed" };
 
-export function EventCard({ event, onClick }) {
-  const sportName = event.sports?.name ?? "Hike";
+const TYPE_STYLES = {
+  casual:     "bg-accent text-accent-foreground",
+  training:   "bg-secondary/20 text-secondary-foreground",
+  tournament: "bg-primary/10 text-primary",
+};
+
+const TYPE_LABEL = {
+  casual:     "Casual",
+  training:   "Training",
+  tournament: "Tournament",
+};
+
+export function EventCard({ event, onClick, cancelled = false }) {
+  const sportName = event.sports?.name ?? "General";
   const isFree = event.price === 0;
   const joined = event.participations?.length ?? 0;
   const max = event.max_participants ?? null;
@@ -15,7 +27,9 @@ export function EventCard({ event, onClick }) {
       onClick={onClick}
       className={cn(
         "w-full text-left rounded-xl border border-border bg-card p-5 shadow-sm transition-all cursor-pointer",
-        isFull
+        cancelled
+          ? "opacity-60 grayscale hover:opacity-70"
+          : isFull
           ? "opacity-70 hover:border-border"
           : "hover:border-primary/50 hover:shadow-md"
       )}
@@ -30,33 +44,36 @@ export function EventCard({ event, onClick }) {
         </span>
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-2">
+        {cancelled ? (
+          <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-semibold text-destructive">
+            Cancelled
+          </span>
+        ) : (
+          <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", TYPE_STYLES[event.type] ?? TYPE_STYLES.casual)}>
+            {TYPE_LABEL[event.type] ?? event.type}
+          </span>
+        )}
         <span className="rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground">
           {GENDER_LABEL[event.gender] ?? event.gender}
         </span>
         <span
           className={cn(
             "rounded-full px-2.5 py-0.5 text-xs font-medium",
-            isFree
-              ? "bg-accent text-accent-foreground"
-              : "bg-secondary/10 text-secondary-foreground"
+            isFree ? "bg-accent text-accent-foreground" : "bg-secondary/10 text-secondary-foreground"
           )}
         >
           {isFree ? "Free" : `${event.price} DA`}
         </span>
-        <span
-          className={cn(
-            "rounded-full px-2.5 py-0.5 text-xs font-medium",
-            isFull
-              ? "bg-destructive/10 text-destructive"
-              : "border border-border text-muted-foreground"
-          )}
-        >
-          {isFull
-            ? "Full"
-            : max
-            ? `${joined} / ${max} spots`
-            : `${joined} joined`}
-        </span>
+        {!cancelled && (
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-0.5 text-xs font-medium",
+              isFull ? "bg-destructive/10 text-destructive" : "border border-border text-muted-foreground"
+            )}
+          >
+            {isFull ? "Full" : max ? `${joined} / ${max} spots` : `${joined} joined`}
+          </span>
+        )}
       </div>
     </button>
   );

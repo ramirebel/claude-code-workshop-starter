@@ -19,7 +19,7 @@ export default function NewEventPage() {
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
-    type: "sport",
+    type: "casual",
     sport_id: "",
     location_name: "",
     location_url: "",
@@ -55,7 +55,7 @@ export default function NewEventPage() {
     const { error: insertError } = await supabase.from("events").insert({
       name: form.name.trim(),
       type: form.type,
-      sport_id: form.type === "sport" && form.sport_id ? form.sport_id : null,
+      sport_id: form.sport_id || null,
       location_name: form.location_name.trim(),
       location_url: form.location_url.trim() || null,
       description: form.description.trim(),
@@ -123,31 +123,30 @@ export default function NewEventPage() {
             value={form.type}
             onChange={(e) => set("type", e.target.value)}
           >
-            <option value="sport">Sport</option>
-            <option value="hike">Hike / Outdoor</option>
+            <option value="casual">Casual</option>
+            <option value="training">Training</option>
+            <option value="tournament">Tournament</option>
           </select>
         </div>
 
-        {form.type === "sport" && (
-          <div>
-            <label htmlFor="ev-sport" className={labelClass}>
-              Sport
-            </label>
-            <select
-              id="ev-sport"
-              className={inputClass}
-              value={form.sport_id}
-              onChange={(e) => set("sport_id", e.target.value)}
-            >
-              <option value="">Select a sport</option>
-              {sports.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        <div>
+          <label htmlFor="ev-sport" className={labelClass}>
+            Sport <span className="font-normal text-muted-foreground">(optional)</span>
+          </label>
+          <select
+            id="ev-sport"
+            className={inputClass}
+            value={form.sport_id}
+            onChange={(e) => set("sport_id", e.target.value)}
+          >
+            <option value="">Select a sport</option>
+            {sports.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div>
           <label htmlFor="ev-location" className={labelClass}>

@@ -89,7 +89,7 @@ on conflict do nothing;
 create table if not exists public.events (
   id               uuid        primary key default gen_random_uuid(),
   name             text        not null,
-  type             text        not null default 'sport',
+  type             text        not null default 'casual',
   sport_id         uuid        references public.sports(id),
   location_name    text        not null,
   location_url     text,
@@ -97,14 +97,19 @@ create table if not exists public.events (
   gender           text        not null default 'mixed',
   price            int         not null default 0,
   max_participants int,
+  cancelled_at     timestamptz,
   created_by       uuid        not null references auth.users(id) on delete cascade,
   created_at       timestamptz not null default now(),
-  constraint events_type_check   check (type   in ('sport', 'hike')),
+  constraint events_type_check   check (type   in ('casual', 'training', 'tournament')),
   constraint events_gender_check check (gender in ('male', 'female', 'mixed'))
 );
 
--- If the table already exists, add the column (safe to run multiple times)
+-- If the table already exists, migrate it (safe to run multiple times)
 alter table public.events add column if not exists max_participants int;
+alter table public.events add column if not exists cancelled_at timestamptz;
+alter table public.events drop constraint if exists events_type_check;
+alter table public.events add constraint events_type_check check (type in ('casual', 'training', 'tournament'));
+alter table public.events alter column type set default 'casual';
 
 alter table public.events enable row level security;
 
