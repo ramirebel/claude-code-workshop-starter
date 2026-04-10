@@ -1,20 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { loginSchema } from "@/lib/validations/auth";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FieldError } from "@/components/auth/FieldError";
-import { useState } from "react";
 
 const inputClass =
   "mt-1.5 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
-export default function LoginPage() {
+function getSafeNextPath(raw) {
+  if (!raw || typeof raw !== "string") return "/";
+  if (!raw.startsWith("/") || raw.startsWith("//")) return "/";
+  return raw;
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formError, setFormError] = useState("");
   const {
     register,
@@ -36,7 +43,8 @@ export default function LoginPage() {
       setFormError(error.message);
       return;
     }
-    router.push("/");
+    const next = getSafeNextPath(searchParams.get("next"));
+    router.push(next);
     router.refresh();
   }
 
@@ -109,5 +117,19 @@ export default function LoginPage() {
         </button>
       </form>
     </AuthShell>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-full flex-1 items-center justify-center bg-background px-4 py-12 text-sm text-muted-foreground">
+          Loading…
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
