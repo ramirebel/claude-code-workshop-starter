@@ -16,17 +16,23 @@ export function EventModal({ event, onClose }) {
   const router = useRouter();
   const [participations, setParticipations] = useState([]);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(false);
   const [formData, setFormData] = useState({ full_name: "", phone: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const isOrganizer = !!user && user.id === event.created_by;
+  const max = event.max_participants ?? null;
+  const joined = participations.length;
+  const isFull = max !== null && joined >= max;
 
   useEffect(() => {
     async function load() {
       const supabase = createClient();
       const { data } = await supabase
         .from("participations")
-        .select("id, full_name, user_id")
+        .select("id, full_name, phone, user_id")
         .eq("event_id", event.id);
 
       if (data) {
@@ -78,7 +84,7 @@ export function EventModal({ event, onClose }) {
     setAlreadyJoined(true);
     setParticipations((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), full_name: formData.full_name, user_id: user.id },
+      { id: crypto.randomUUID(), full_name: formData.full_name, phone: formData.phone, user_id: user.id },
     ]);
   }
 
@@ -117,10 +123,50 @@ export function EventModal({ event, onClose }) {
             <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
               {isFree ? "Free" : `${event.price} DA`}
             </span>
-            <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-              {participations.length} participant{participations.length !== 1 ? "s" : ""}
-            </span>
+            {/* Clickable seats badge */}
+            <button
+              type="button"
+              onClick={() => setShowParticipants((v) => !v)}
+              className={cn(
+                "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                isFull
+                  ? "bg-destructive/10 text-destructive"
+                  : "border border-border text-muted-foreground hover:bg-muted"
+              )}
+            >
+              {isFull
+                ? `Full (${joined}${max ? ` / ${max}` : ""})`
+                : max
+                ? `${joined} / ${max} spots`
+                : `${joined} participant${joined !== 1 ? "s" : ""}`}
+              {" "}{showParticipants ? "▲" : "▼"}
+            </button>
           </div>
+
+          {/* Participants list (toggle) */}
+          {showParticipants && (
+            <div className="mt-3 rounded-lg border border-border bg-muted/50 p-3">
+              {participations.length === 0 ? (
+                <p className="text-xs text-muted-foreground">No one has joined yet.</p>
+              ) : (
+                <ul className="flex flex-col gap-2">
+                  {participations.map((p) => (
+                    <li key={p.id} className="flex items-center justify-between gap-3 text-sm">
+                      <span className="font-medium text-foreground">{p.full_name}</span>
+                      {isOrganizer && (
+                        <span className="text-xs text-muted-foreground">{p.phone}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {isOrganizer && participations.length > 0 && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Visible to you as the organizer.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Description */}
           <p className="mt-4 text-sm leading-relaxed text-foreground">{event.description}</p>
@@ -148,6 +194,10 @@ export function EventModal({ event, onClose }) {
             <div className="rounded-lg border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
               You&apos;ve already joined this event.
             </div>
+          ) : isFull ? (
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              This event is full. No spots remaining.
+            </div>
           ) : !isAuthenticated ? (
             <div className="rounded-lg border border-border bg-muted px-4 py-3 text-sm">
               <button
@@ -161,7 +211,14 @@ export function EventModal({ event, onClose }) {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <h3 className="text-sm font-semibold text-foreground">Join this event</h3>
+              <h3 className="text-sm font-semibold text-foreground">
+                Join this event
+                {max && (
+                  <span className="ml-2 font-normal text-muted-foreground">
+                    ({max - joined} spot{max - joined !== 1 ? "s" : ""} left)
+                  </span>
+                )}
+              </h3>
               {error && (
                 <p
                   className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"

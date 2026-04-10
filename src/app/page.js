@@ -5,7 +5,7 @@ export default async function Home() {
   const supabase = await createClient();
   const { data: events } = await supabase
     .from("events")
-    .select("*, sports(name, type)")
+    .select("*, sports(name, type), participations(id)")
     .order("created_at", { ascending: false });
 
   return <HomeClient events={events ?? []} />;

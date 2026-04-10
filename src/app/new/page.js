@@ -26,6 +26,7 @@ export default function NewEventPage() {
     description: "",
     gender: "mixed",
     price: "0",
+    max_participants: "",
   });
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function NewEventPage() {
       description: form.description.trim(),
       gender: form.gender,
       price: parseInt(form.price, 10) || 0,
+      max_participants: form.max_participants ? parseInt(form.max_participants, 10) : null,
       created_by: user.id,
     });
     setSubmitting(false);
@@ -221,6 +223,23 @@ export default function NewEventPage() {
             className={inputClass}
             value={form.price}
             onChange={(e) => set("price", e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="ev-max" className={labelClass}>
+            Max participants{" "}
+            <span className="font-normal text-muted-foreground">— leave empty for no limit</span>
+          </label>
+          <input
+            id="ev-max"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="e.g. 10"
+            className={inputClass}
+            value={form.max_participants}
+            onChange={(e) => set("max_participants", e.target.value)}
           />
         </div>
 

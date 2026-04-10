@@ -5,14 +5,19 @@ const GENDER_LABEL = { male: "Men only", female: "Women only", mixed: "Mixed" };
 export function EventCard({ event, onClick }) {
   const sportName = event.sports?.name ?? "Hike";
   const isFree = event.price === 0;
+  const joined = event.participations?.length ?? 0;
+  const max = event.max_participants ?? null;
+  const isFull = max !== null && joined >= max;
 
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full text-left rounded-xl border border-border bg-card p-5 shadow-sm",
-        "hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
+        "w-full text-left rounded-xl border border-border bg-card p-5 shadow-sm transition-all cursor-pointer",
+        isFull
+          ? "opacity-70 hover:border-border"
+          : "hover:border-primary/50 hover:shadow-md"
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -37,6 +42,20 @@ export function EventCard({ event, onClick }) {
           )}
         >
           {isFree ? "Free" : `${event.price} DA`}
+        </span>
+        <span
+          className={cn(
+            "rounded-full px-2.5 py-0.5 text-xs font-medium",
+            isFull
+              ? "bg-destructive/10 text-destructive"
+              : "border border-border text-muted-foreground"
+          )}
+        >
+          {isFull
+            ? "Full"
+            : max
+            ? `${joined} / ${max} spots`
+            : `${joined} joined`}
         </span>
       </div>
     </button>
